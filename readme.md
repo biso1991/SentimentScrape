@@ -6,7 +6,7 @@ Ce projet analyse des tweets  sur la dépression, affiche leur sentiment(positif
 
 ## Sommaire:
 
-- [Description de l&#39;application](#Description de l'application:)
+- [Description](#fonctionnalités)
 - [Fonctionnalités](#fonctionnalités)
 - [Prérequis](#prérequis)
 - [Installation &amp; Lancement](#installation--lancement)
@@ -176,8 +176,6 @@ https://huggingface.co/neuroapps/sentiments_classifier=transformers
 ![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/28.png)
 ![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/29.png)
 
-
-
-**Remarque :** 
+**Remarque :**
 
 certaines explications ou parties d'exercice n'ont pas pu etre rédigées ou ajoutée dans ce README par manque de temps. Merci de votre compréhension.
