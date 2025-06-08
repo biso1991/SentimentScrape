@@ -1,0 +1,6 @@
+Flask==3.0.3
+# pandas==2.0.2
+# playwright
+transformers[torch]==4.40.2
+tweepy==4.15.0
+pymongo==4.5.0

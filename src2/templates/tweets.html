@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Analyse des Tweets</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; }
+        .tweet { background: #fff; margin: 1em 0; padding: 1em; border-radius: 8px; box-shadow: 0 2px 4px #ddd; }
+        .label { font-weight: bold; }
+        .NEGATIVE { color: #c00; }
+        .POSITIVE { color: #090; }
+    </style>
+</head>
+<body>
+    <h1>Analyse des Tweets</h1>
+    <h2>Classification des sentiments(Tweet original, Nettoyé, Sentiment, Détection des thèmes) et Détection des thèmes  </h2>
+    {% for t in results %}
+ 
+    <div class="tweet">
+       
+        
+        <div><span class="label">Tweet original :</span> {{ t.original }}</div>
+        <div><span class="label">Nettoyé :</span> {{ t.cleaned }}</div>
+        <div>
+            <span class="label">Sentiment :</span>
+            <span class="{{ t.sentiment }}">{{ t.sentiment }} (score: {{ t.score|round(2) }})</span>
+        </div>
+
+        <div>
+            <span class="label">Détection des thèmes  :</span> {{ t.themes|join(', ') }}
+        </div>
+    </div>
+    {% endfor %}
+</body>
+</html>

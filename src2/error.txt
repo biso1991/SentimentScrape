@@ -1,0 +1,45 @@
+ice_journe_observation-mongodb-1 mongosh -u mongoadmin -p mongopass
+Current Mongosh Log ID:	683717af23ec497651d861df
+Connecting to:		mongodb://<credentials>@127.0.0.1:27017/?directConnection=true&serverSelectionTimeoutMS=2000&appName=mongosh+2.5.0
+Using MongoDB:		6.0.23
+Using Mongosh:		2.5.0
+
+For mongosh info see: https://www.mongodb.com/docs/mongodb-shell/
+
+------
+   The server generated these startup warnings when booting
+   2025-05-28T13:57:07.992+00:00: Using the XFS filesystem is strongly recommended with the WiredTiger storage engine. See http://dochub.mongodb.org/core/prodnotes-filesystem
+   2025-05-28T13:57:09.071+00:00: /sys/kernel/mm/transparent_hugepage/enabled is 'always'. We suggest setting it to 'never' in this binary version
+   2025-05-28T13:57:09.071+00:00: vm.max_map_count is too low
+------
+
+test> use tweetdb
+... db.tweets.find().pretty()
+switched to db tweetdb
+tweetdb> 
+
+
+: (0, 0) base write gen: 938"}}}
+flaskapp-1  | ############################################################################################################
+flaskapp-1  | starting depression tweets  analysis
+flaskapp-1  | Tweet: @gabptsch pas moi #depression
+flaskapp-1  |   => Cleaned: pas moi  
+flaskapp-1  | 
+flaskapp-1  | [2025-05-28 15:01:34,830] ERROR in app: Exception on /tweet [GET]
+flaskapp-1  | Traceback (most recent call last):
+flaskapp-1  |   File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 1473, in wsgi_app
+flaskapp-1  |     response = self.full_dispatch_request()
+flaskapp-1  |                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+flaskapp-1  |   File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 882, in full_dispatch_request
+flaskapp-1  |     rv = self.handle_user_exception(e)
+flaskapp-1  |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+flaskapp-1  |   File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 880, in full_dispatch_request
+flaskapp-1  |     rv = self.dispatch_request()
+flaskapp-1  |          ^^^^^^^^^^^^^^^^^^^^^^^
+flaskapp-1  |   File "/usr/local/lib/python3.11/site-packages/flask/app.py", line 865, in dispatch_request
+flaskapp-1  |     return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+flaskapp-1  |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+flaskapp-1  |   File "/code/src2/app.py", line 123, in tweet_by_index
+flaskapp-1  |     document.append({
+flaskapp-1  |     ^^^^^^^^
+flaskapp-1  | NameError: name 'document' is not defined
