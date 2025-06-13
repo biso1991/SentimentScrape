@@ -1,0 +1,53 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints
+
+# VSCode
+.vscode/
+
+# Environment
+.env
+.venv/
+venv/
+env/
+ENV/
+
+# Logs
+*.log
+
+# Data & Models
+src2/fine_tuned_model/
+src2/uploaded_models/
+src2/train_data.txt
+src2/retrain_report.txt
+
+# Mongo/Redis volumes (handled by Docker)
+mongo-data/
+*.db
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker
+*.pid
+
+# Ignore compiled files
+src2/__pycache__/
+src2/*.pyc
+src2/*.pyo
+src2/*.pyd
+
+# Ignore huggingface cache
+~/.cache/huggingface/

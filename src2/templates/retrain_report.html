@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Historique des Réentrainements</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 2em; }
+        .container { background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 4px #ddd; max-width: 1200px; margin: auto; }
+        h1 { text-align: center; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 1em 0; }
+        a { text-decoration: none; color: #4285F4; }
+        a:hover { text-decoration: underline; }
+        pre { background: #f0f0f0; padding: 1em; border-radius: 8px; }
+        canvas { margin: 2em auto; display: block; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 2em; }
+        th, td { border: 1px solid #ccc; padding: 0.5em; text-align: center; }
+        th { background: #f0f0f0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Historique des Réentrainements</h1>
+
+        {% if summaries %}
+            <h2>Résumé des entraînements</h2>
+            <table>
+                <tr>
+                    <th>Nom du rapport</th>
+                    <th>Date</th>
+                    <th>Dataset</th>
+                    <th>Nb exemples</th>
+                    <th>Base model</th>
+                    <th>Epochs</th>
+                    <th>Learning rate</th>
+                    <th>Status</th>
+                    <th>Accuracy (%)</th>
+                    <th>Loss</th>
+                    <th>F1</th>
+                    <th>Taille modèle</th>
+                    <th>Modèle exporté</th>
+                    <th>Utilisateur</th>
+                    <th>Voir</th>
+                </tr>
+                {% for s in summaries %}
+                <tr>
+                    <td>{{ s.filename }}</td>
+                    <td>{{ s.date | datetimeformat if s.date else 'N/A' }}</td>
+                    <td>{{ s.dataset or 'N/A' }}</td>
+                    <td>{{ s.num_examples or 'N/A' }}</td>
+                    <td>{{ s.base_model or 'N/A' }}</td>
+                    <td>{{ s.epochs or 'N/A' }}</td>
+                    <td>{{ s.learning_rate or 'N/A' }}</td>
+                    <td>{{ s.status or 'N/A' }}</td>
+                    <td>{{ s.accuracy if s.accuracy is not none else 'N/A' }}</td>
+                    <td>{{ s.loss if s.loss is not none else 'N/A' }}</td>
+                    <td>{{ s.f1 if s.f1 is not none else 'N/A' }}</td>
+                    <td>{{ s.model_size or 'N/A' }}</td>
+                    <td>
+                        {% if s.model_url %}
+                            <a href="{{ s.model_url }}" target="_blank">Télécharger</a>
+                        {% else %}
+                            N/A
+                        {% endif %}
+                    </td>
+                    <td>{{ s.user or 'N/A' }}</td>
+                    <td><a href="{{ url_for('show_retrain_report', filename=s.filename) }}">Voir</a></td>
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        <ul>
+            {% for fname in reports %}
+                <li>
+                    <a href="{{ url_for('show_retrain_report', filename=fname) }}">
+                        {{ fname }}{% if fname == selected_report %} (actuel){% endif %}
+                    </a>
+                </li>
+            {% endfor %}
+        </ul>
+
+        {% if pie_labels and pie_precision and pie_recall and pie_f1 %}
+            <h2>Comparaison des scores par classe</h2>
+            <canvas id="metricsBarChart" width="600" height="300"></canvas>
+            <script>
+                const barLabels = {{ pie_labels|tojson }};
+                const barPrecision = {{ pie_precision|tojson }};
+                const barRecall = {{ pie_recall|tojson }};
+                const barF1 = {{ pie_f1|tojson }};
+                const ctx = document.getElementById('metricsBarChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: barLabels,
+                        datasets: [
+                            {
+                                label: 'Précision',
+                                data: barPrecision,
+                                backgroundColor: 'rgba(66, 133, 244, 0.7)'
+                            },
+                            {
+                                label: 'Rappel',
+                                data: barRecall,
+                                backgroundColor: 'rgba(52, 168, 83, 0.7)'
+                            },
+                            {
+                                label: 'F1-score',
+                                data: barF1,
+                                backgroundColor: 'rgba(251, 188, 5, 0.7)'
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: { position: 'top' },
+                            title: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 1,
+                                title: { display: true, text: 'Score' }
+                            }
+                        }
+                    }
+                });
+            </script>
+        {% endif %}
+
+        {% if confusion_matrix %}
+            <h2>Matrice de confusion</h2>
+            <table>
+                <tr>
+                    <th></th>
+                    {% for i in range(confusion_matrix|length) %}
+                        <th>Classe {{ i }}</th>
+                    {% endfor %}
+                </tr>
+                {% for row, row_vals in confusion_matrix|enumerate %}
+                <tr>
+                    <th>Classe {{ row }}</th>
+                    {% for val in row_vals %}
+                        <td>{{ val }}</td>
+                    {% endfor %}
+                </tr>
+                {% endfor %}
+            </table>
+        {% endif %}
+
+        <a href="/">Retour</a>
+    </div>
+</body>
+</html>

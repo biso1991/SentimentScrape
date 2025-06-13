@@ -1,0 +1,6 @@
+Use the MongoDB shell
+Enter the MongoDB container:
+docker-compose exec mongodb mongosh -u mongoadmin -p mongopass
+Run this in the Mongo shell:
+use tweetdb
+db.tweets.find({"original.text": /depression/i}).forEach(function(doc){ print(doc.original.text); })

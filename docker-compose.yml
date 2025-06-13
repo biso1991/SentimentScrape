@@ -12,15 +12,20 @@ services:
     volumes:
       - mongo-data:/data/db
 
+  redis:
+    image: redis:7
+    restart: always
+    ports:
+      - "6379:6379"
 
   flaskapp:
     build: ./src2
     command: >
       bash -c "
-       pip install --upgrade pip &&
-      #  pip install gensim==4.3.1  nltk==3.8.1  &&
+        pip install --upgrade pip &&
         python src2/wait_for_mongodb.py &&
-        python  -u src2/app.py
+        # pip install huggingface_hub &&
+        python -u src2/app.py 
       "
     volumes:
       - .:/code
@@ -29,6 +34,17 @@ services:
       - "8000:8000"
     depends_on:
       - mongodb
+      - redis
+
+  worker:
+    build: ./src2
+    command: rq worker tweets --url redis://redis:6379/0 
+    volumes:
+      - .:/code
+    working_dir: /code/src2
+    depends_on:
+      - mongodb
+      - redis
 
 volumes:
   mongo-data:

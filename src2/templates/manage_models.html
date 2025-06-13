@@ -1,0 +1,53 @@
+<!-- filepath: src2/templates/manage_models.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Gérer les modèles</title>
+    <style>
+        .container { max-width: 700px; margin: auto; padding: 2em; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px #ddd; }
+        label { display: block; margin-top: 1em; }
+        input[type="text"], input[type="file"] { width: 100%; }
+        button { margin-top: 1em; }
+        .success { color: green; }
+        .danger { color: red; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Ajouter ou lier un modèle</h1>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            <ul>
+              {% for category, message in messages %}
+                <li class="{{ category }}">{{ message }}</li>
+              {% endfor %}
+            </ul>
+          {% endif %}
+        {% endwith %}
+        <form method="post" enctype="multipart/form-data">
+            <label>Uploader un modèle local (.pt, .bin, etc.) :</label>
+            <input type="file" name="model_file">
+            <button type="submit">Uploader</button>
+        </form>
+        <form method="post">
+            <label>Lier un modèle Hugging Face (ex: bert-base-uncased) :</label>
+            <input type="text" name="hf_model_link" placeholder="huggingface/model-name">
+            <button type="submit">Ajouter</button>
+        </form>
+        <h2>Modèles disponibles</h2>
+        <ul>
+            {% for m in models %}
+                <li>
+                    {% if m.type == 'upload' %}
+                        <b>Upload:</b> {{ m.name }}
+                    {% else %}
+                        <b>HuggingFace:</b> {{ m.name }}
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+        <a href="/">Retour</a>
+    </div>
+</body>
+</html>

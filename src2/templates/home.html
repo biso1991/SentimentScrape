@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Accueil - Monitoring & Analyse Tweets</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f7f7f7; padding: 2em; }
+        .container { background: #fff; padding: 2em; border-radius: 8px; box-shadow: 0 2px 4px #ddd; max-width: 700px; margin: auto; }
+        h1, h2 { text-align: center; }
+        ul { list-style: none; padding: 0; }
+        li { margin: 1em 0; }
+        a { text-decoration: none; color: #4285F4; font-size: 1.1em; }
+        a:hover { text-decoration: underline; }
+        form { margin-top: 1em; text-align: center; }
+        #monitorChart { margin-top: 2em; }
+        table { width: 100%; border-collapse: collapse; margin-top: 2em; background: #fff; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background: #f0f0f0; }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Accueil</h1>
+        <ul>
+            <li><a href="/tweets">Voir les Tweets analysés</a></li>
+            <li><a href="/retrain_report">Voir le rapport de réentrainement</a></li>
+            <li><a href="/retrain_model">Lancer le réentrainement du modèle</a></li>
+            <li><a href="/api/monitoring" target="_blank">API Monitoring (JSON)</a></li>
+            <li><a href="/api/model_report" target="_blank">API Rapport Modèle (JSON)</a></li>
+            <li>
+                <form method="post" action="/search_tweets">
+                    <input type="text" name="hashtag" placeholder="Entrer un hashtag" required>
+                    <button type="submit">Analyser un hashtag</button>
+                </form>
+            </li>
+        </ul>
+        <h2>Distribution des Classes (Pie Chart)</h2>
+        <canvas id="monitorChart" width="400" height="200"></canvas>
+
+        <h2>Rapport du Modèle</h2>
+        <table id="modelTable">
+            <thead>
+                <tr>
+                    <th>Classe</th>
+                    <th>Précision</th>
+                    <th>Rappel</th>
+                    <th>F1-score</th>
+                    <th>Support</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- JS will fill this -->
+            </tbody>
+        </table>
+    </div>
+    <script>
+        let pieChart;
+        // Pie chart for class distribution (support)
+        async function renderPieChart() {
+            const response = await fetch('/api/model_report');
+            const data = await response.json();
+            const labels = data.pie && data.pie.labels ? data.pie.labels : [];
+            const support = data.pie && data.pie.support ? data.pie.support : [];
+            const ctx = document.getElementById('monitorChart').getContext('2d');
+            if (pieChart) pieChart.destroy();
+            pieChart = new Chart(ctx, {
+                type: 'pie',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: support,
+                        backgroundColor: [
+                            'rgba(66, 133, 244, 0.6)',
+                            'rgba(52, 168, 83, 0.6)',
+                            'rgba(251, 188, 5, 0.6)'
+                        ],
+                        borderColor: [
+                            'rgba(66, 133, 244, 1)',
+                            'rgba(52, 168, 83, 1)',
+                            'rgba(251, 188, 5, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: { display: true, position: 'bottom' }
+                    },
+                    animation: { duration: 800 }
+                }
+            });
+        }
+
+        // Modeling table
+        async function updateModelTable() {
+            const response = await fetch('/api/model_report');
+            const data = await response.json();
+            const tbody = document.querySelector("#modelTable tbody");
+            tbody.innerHTML = "";
+            data.table.forEach(row => {
+                const tr = document.createElement("tr");
+                tr.innerHTML = `<td>${row.label}</td>
+                                <td>${row.precision}</td>
+                                <td>${row.recall}</td>
+                                <td>${row['f1-score']}</td>
+                                <td>${row.support}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        renderPieChart();
+        updateModelTable();
+        setInterval(renderPieChart, 5000);
+        setInterval(updateModelTable, 5000);
+    </script>
+    <a href="{{ url_for('manage_models') }}">Ajouter ou lier un modèle</a>
+</body>
+</html>

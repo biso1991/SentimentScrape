@@ -2,6 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <title>Analyse des Tweets</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f7f7f7; }
@@ -9,27 +10,34 @@
         .label { font-weight: bold; }
         .NEGATIVE { color: #c00; }
         .POSITIVE { color: #090; }
+        .fa-hashtag { color: #4285F4; margin-right: 2px; }
+        form { margin-bottom: 2em; }
     </style>
 </head>
 <body>
     <h1>Analyse des Tweets</h1>
-    <h2>Classification des sentiments(Tweet original, Nettoyé, Sentiment, Détection des thèmes) et Détection des thèmes  </h2>
-    {% for t in results %}
- 
+    <form method="post" action="/search_tweets">
+        <input type="text" name="hashtag" placeholder="Entrez un hashtag (ex: stress)" required>
+        <button type="submit">Rechercher</button>
+    </form>
+    <h2>Classification des sentiments (Tweet original, Nettoyé, Sentiment, Détection des thèmes)</h2>
+    {% for t in tweets %}
     <div class="tweet">
-       
-        
-        <div><span class="label">Tweet original :</span> {{ t.original }}</div>
+        <div>
+            <span class="label">Tweet original :</span>
+            {{ t.original.text|hashtag_icon|safe }}
+        </div>
         <div><span class="label">Nettoyé :</span> {{ t.cleaned }}</div>
         <div>
             <span class="label">Sentiment :</span>
             <span class="{{ t.sentiment }}">{{ t.sentiment }} (score: {{ t.score|round(2) }})</span>
         </div>
-
         <div>
-            <span class="label">Détection des thèmes  :</span> {{ t.themes|join(', ') }}
+            <span class="label">Détection des thèmes :</span> {{ t.themes|join(', ') }}
         </div>
     </div>
+    {% else %}
+    <p>Aucun tweet trouvé.</p>
     {% endfor %}
 </body>
 </html>

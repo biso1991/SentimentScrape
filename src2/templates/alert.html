@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Statut de la recherche</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .alert { padding: 1em; border-radius: 5px; margin: 2em auto; width: 80%; font-size: 1.2em; }
+        .danger { background: #f8d7da; color: #721c24; }
+        .success { background: #d4edda; color: #155724; }
+        .info { background: #d1ecf1; color: #0c5460; }
+        .warning { background: #fff3cd; color: #856404; }
+        .secondary { background: #e2e3e5; color: #383d41; }
+    </style>
+    {% if status in ["info", "warning"] %}
+    <meta http-equiv="refresh" content="2">
+    {% endif %}
+</head>
+<body>
+    <div class="alert {{ status }}">
+        {{ message }}
+    </div>
+    {% if tweets %}
+        <h2>Résultats :</h2>
+        <pre>{{ tweets }}</pre>
+    {% endif %}
+</body>
+</html>
