@@ -1,4 +1,0 @@
-data354/camembert-fr-covid-tweet-sentiment-classification
-data354/camembert-fr-covid-tweet-sentiment-classification
-https://huggingface.co/data354/camembert-fr-covid-tweet-sentiment-classification
-data354/camembert-fr-covid-tweet-sentiment-classification
