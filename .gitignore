@@ -50,4 +50,4 @@ src2/*.pyo
 src2/*.pyd
 
 # Ignore huggingface cache
-~/.cache/huggingface/
+~/.cache/huggingface/src2/uploaded_models/

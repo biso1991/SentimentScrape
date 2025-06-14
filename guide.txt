@@ -4,3 +4,19 @@ docker-compose exec mongodb mongosh -u mongoadmin -p mongopass
 Run this in the Mongo shell:
 use tweetdb
 db.tweets.find({"original.text": /depression/i}).forEach(function(doc){ print(doc.original.text); })
+
+
+
+git setup:
+    git rev-list --objects --all | sort -k 2 > allfiles.txt
+    git verify-pack -v .git/objects/pack/pack-*.idx | sort -k 3 -n | tail -20
+        .git/objects/pack/pack-71fa1673957b7b7ad021cb8127af50911efa82db.pack: ok
+        non delta: 1 object
+        39d3a5cd0ed5731eba8734db3b3bbdb2193bc572 blob   539633244 488599984 12
+git rev-list --objects --all | grep 39d3a5cd0ed5731eba8734db3b3bbdb2193bc572
+    39d3a5cd0ed5731eba8734db3b3bbdb2193bc572 src2/fine_tuned_model/model.safetensors
+git rm --cached src2/fine_tuned_model/model.safetensors
+echo "src2/fine_tuned_model/" >> .gitignore
+git add .gitignore
+git commit -m "fix: removed large model.safetensors from tracking and added to .gitignore"
+
