@@ -29,8 +29,8 @@ def normalize_text(text):
     return text
 
 bearer_tokens = [
-    'AAAAAAAAAAAAAAAAAAAAADiH2QEAAAAAfqwR9kgIwJYGc%2FieNaTXxuHjS3g%3Dqkg14aLY01ykG6ggeGZkVQ6TqRNWUjKQImNJYYQZZxGtiRPDVx',
-    'AAAAAAAAAAAAAAAAAAAAAGSI2QEAAAAAGKAAXVvtMrJvs8UwD8EC%2FhA5fzs%3DFRoYJnLhfaAPbocVtzEhTG5lCSqii5hMuDb2lCeZkP5p6JOkGp'
+    'AAAAAAAAAAAAAAAAAAAAAGSI2QEAAAAArebLt3WJU8CunA%2FPYZy88EWmioo%3D3RmtshcpsYPJeRAAhI7YfCWLQvhBCiKu6VQgbT5q8cRDD65fw6', #BI LEL
+    'AAAAAAAAAAAAAAAAAAAAAIhg2gEAAAAANGgAOcYON5bh7tmQWsAhT%2BbsXKs%3DLW3DZpw85JNY9Pkta07BRR36pn1lVUWvpFyTlalyPZ7WGvhOlW' # ancient
 ]
 token_cycle = itertools.cycle(bearer_tokens)
 
@@ -40,9 +40,9 @@ def call_twitter_api(hashtag, max_total=10):
     next_token = None
 
     # Load model/tokenizer INSIDE the function
-    model_path = "./fine_tuned_model" if os.path.exists("./fine_tuned_model") else MODEL_NAME
-    sentiment_tokenizer = AutoTokenizer.from_pretrained(model_path)
-    sentiment_model = AutoModelForSequenceClassification.from_pretrained(model_path)
+    # model_path = "./fine_tuned_model" if os.path.exists("./fine_tuned_model") else MODEL_NAME
+    # sentiment_tokenizer = AutoTokenizer.from_pretrained(model_path)
+    # sentiment_model = AutoModelForSequenceClassification.from_pretrained(model_path)
 
     while len(tweets) < max_total:
         all_rate_limited = True
@@ -102,6 +102,8 @@ def download_hf_model(model_name_or_link, save_dir):
         else:
             model_name = model_name_or_link.strip()
         os.makedirs(save_dir, exist_ok=True)
+        # Download model, tokenizer, and config
+        print(f"Downloading {model_name} to {save_dir}...")
         AutoModel.from_pretrained(model_name, cache_dir=save_dir)
         AutoTokenizer.from_pretrained(model_name, cache_dir=save_dir)
         AutoConfig.from_pretrained(model_name, cache_dir=save_dir)

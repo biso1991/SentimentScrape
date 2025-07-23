@@ -11,9 +11,10 @@ import datetime
 from transformers import AutoModel, AutoTokenizer, AutoConfig
 # import shutil
 from worker import download_hf_model
+import subprocess
+from huggingface_hub import HfApi
 
 
-app = Flask(__name__)
 app = Flask(__name__)
 app.secret_key = "123456"  
 redis_conn = Redis(host='redis', port=6379)
@@ -115,7 +116,7 @@ def show_result(job_id):
         return render_template('alert.html', message=f"Recherche en cours pour #{hashtag}... Veuillez patienter.", status="warning")
     else:
         return render_template('alert.html', message="Statut du job inconnu.", status="secondary")
-
+##############################################################################################
 @app.route('/tweets')
 def show_tweets():
     mongo_client = MongoClient("mongodb://mongoadmin:mongopass@mongodb:27017/")
@@ -123,6 +124,22 @@ def show_tweets():
     collection = db["tweets"]
     tweets = list(collection.find().sort("_id", -1).limit(100))
     return render_template('tweets.html', tweets=tweets)
+@app.route('/api/tweets')
+def api_tweets():
+    hashtag = request.args.get('hashtag', '').strip()
+    mongo_client = MongoClient("mongodb://mongoadmin:mongopass@mongodb:27017/")
+    db = mongo_client["tweetdb"]
+    collection = db["tweets"]
+    query = {}
+    if hashtag:
+        # Search for hashtag in original tweet text (case-insensitive)
+        query = {"original.text": {"$regex": hashtag, "$options": "i"}}
+    tweets = list(collection.find(query).sort("_id", -1).limit(100))
+    # Optionally, convert ObjectId to string and filter fields
+    for t in tweets:
+        t["_id"] = str(t["_id"])
+    return jsonify(tweets)
+##################################################################################################
 
 @app.route('/retrain_report')
 def retrain_report():
@@ -313,5 +330,39 @@ def manage_models():
             flash("Aucun modèle sélectionné.", "danger")
         return redirect(url_for('manage_models'))
     return render_template('manage_models.html', models=models)
+
+
+@app.route('/retrain', methods=['POST'])
+def retrain():
+    try:
+        # Launch retraining as a subprocess (non-blocking)
+        subprocess.Popen(["python3", os.path.join(os.path.dirname(__file__), "retrain_model.py")])
+        flash("Réentraînement lancé en tâche de fond.", "info")
+    except Exception as e:
+        flash(f"Erreur lors du lancement du réentraînement: {e}", "danger")
+
+    return redirect(url_for('retrain_report'))
+
+
+# def get_model_eval_metrics(model_id: str):
+#     try:
+#         card_data = HfApi().model_info(model_id).cardData
+#         eval_metrics = card_data.get("eval_results", {})
+#         return eval_metrics
+#     except Exception as e:
+#         print(f"Error fetching eval metrics: {e}")
+#         return {}
+# get model evaluation metrics
+@app.route('/api/model_eval/<model_id>')
+def get_model_eval(model_id):
+    try:
+        card_data = HfApi().model_info(model_id).cardData
+        eval_metrics = card_data.get("eval_results", {})
+        if not eval_metrics:
+            return jsonify({"message": "Aucune métrique d'évaluation trouvée pour ce modèle."}), 404
+        return jsonify(eval_metrics)
+    except Exception as e:
+        print(f"Error fetching eval metrics: {e}")
+        return jsonify({"error": str(e)}), 500
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8000)

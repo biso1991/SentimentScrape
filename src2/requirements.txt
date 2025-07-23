@@ -13,3 +13,5 @@ torch
 numpy==1.24.4
 
 scikit-learn==1.3.0
+accelerate==0.28.0
+huggingface-hub==0.20.3

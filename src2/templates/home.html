@@ -20,6 +20,10 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
+    <!-- Add this where you want the button to appear -->
+<form action="{{ url_for('retrain') }}" method="post" style="display:inline;">
+    <button type="submit">Lancer un réentraînement</button>
+</form>
     <div class="container">
         <h1>Accueil</h1>
         <ul>

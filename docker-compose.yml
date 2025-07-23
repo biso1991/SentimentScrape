@@ -23,8 +23,10 @@ services:
     command: >
       bash -c "
         pip install --upgrade pip &&
+        pip install accelerate -U &&
         python src2/wait_for_mongodb.py &&
         # pip install huggingface_hub &&
+        # python src2/retrain_model.py &&
         python -u src2/app.py 
       "
     volumes:
