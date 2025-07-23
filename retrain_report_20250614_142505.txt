@@ -1,0 +1,20 @@
+Dataset: MongoDB tweets
+Base model: finiteautomata/bertweet-base-sentiment-analysis
+Epochs: 2
+Learning rate: 2e-05
+Status: Success
+User: auto
+
+Evaluation results:
+{'eval_loss': 0.16008242964744568, 'eval_accuracy': 0.875, 'eval_runtime': 0.6185, 'eval_samples_per_second': 12.934, 'eval_steps_per_second': 1.617, 'epoch': 2.0}
+
+Classification report:
+              precision    recall  f1-score   support
+
+    NEGATIVE       0.00      0.00      0.00         1
+     NEUTRAL       0.88      1.00      0.93         7
+    POSITIVE       0.00      0.00      0.00         0
+
+   micro avg       0.88      0.88      0.88         8
+   macro avg       0.29      0.33      0.31         8
+weighted avg       0.77      0.88      0.82         8

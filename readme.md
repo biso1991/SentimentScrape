@@ -48,6 +48,157 @@ Ce projet analyse des tweets  sur la dépression, affiche leur sentiment(positif
 
 ## Installation & Lancement
 
+Absolutely, Bilel. Here's a **professionally written "Content Architecture" section** that you can directly include in your `README.md`. It uses clear technical language, proper formatting, and is suitable for GitHub, portfolios, or documentation.
+
+---
+
+## 🧱 Content Architecture
+
+The `TweetSentimentAnalyzer` is built using a **modular, containerized full-stack architecture** that enables real-time sentiment analysis, model retraining, and insightful visualization of Twitter data.
+
+This architecture includes the following core components:
+
+---
+
+### 1. 🔗 Backend – Flask API (`backend/`)
+
+A Python-based RESTful API built with  **Flask** , responsible for the application’s data and ML logic.
+
+**Responsibilities:**
+
+* Serve sentiment predictions via pre-trained or fine-tuned transformer models
+* Trigger asynchronous model retraining using Celery
+* Interface with MongoDB for tweet storage and report management
+* Expose REST endpoints for use by the Angular frontend
+
+**Key Modules:**
+
+| File                 | Purpose                                             |
+| -------------------- | --------------------------------------------------- |
+| `app.py`           | Main Flask app, routes and API logic                |
+| `worker.py`        | Background worker for retraining (Celery)           |
+| `retrain_model.py` | Fine-tuning and evaluation logic for NLP models     |
+| `config.py`        | Configuration for model paths, database URIs, etc.  |
+| `utils.py`         | Text cleaning, preprocessing, and utility functions |
+| `requirements.txt` | Python dependencies                                 |
+
+---
+
+### 2. 🎨 Frontend – Angular SPA (`frontend/`)
+
+A responsive **Single Page Application (SPA)** built with Angular, providing a rich user interface for interaction and monitoring.
+
+**Responsibilities:**
+
+* Enable tweet search by hashtags
+* Visualize sentiment and theme analysis
+* Manage and upload transformer models
+* Trigger model retraining
+* Download and review training reports
+
+**Key Modules:**
+
+| File / Directory      | Purpose                                   |
+| --------------------- | ----------------------------------------- |
+| `src/app/pages/`    | UI components: Dashboard, Reports, Models |
+| `src/app/services/` | Handles HTTP communication with Flask API |
+| `Dockerfile`        | Frontend container setup                  |
+| `angular.json`      | Build and config management               |
+
+---
+
+### 3. 🗄️ Database – MongoDB
+
+MongoDB is used as a **NoSQL document store** for:
+
+* Persisting raw and cleaned tweets
+* Caching hashtag search results
+* Storing metadata on models and retraining reports
+
+**MongoDB** is containerized and managed via Docker Compose.
+
+---
+
+### 4. 🤖 Model Management
+
+The project utilizes **Hugging Face Transformers** for NLP tasks. Models are either pre-trained, linked via Hugging Face, or fine-tuned using in-app data.
+
+**Model lifecycle:**
+
+* Load models at runtime for inference
+* Fine-tune models using user data via background jobs
+* Store trained weights in the `fine_tuned_model/` directory
+
+---
+
+### 5. 📊 Reporting & Monitoring
+
+Training and evaluation metrics are stored as plain text in:
+
+```
+retrain_reports/
+├── retrain_report.txt
+├── retrain_report_<timestamp>.txt
+```
+
+These reports include:
+
+* Accuracy, precision, recall, F1-score
+* Loss evolution and evaluation metrics
+* Training timestamps and model IDs
+
+Reports can be downloaded from the frontend or via the API.
+
+---
+
+### 6. 🐳 Containerization & Deployment
+
+All services run in **Docker containers** orchestrated using `docker-compose`.
+
+**Service Overview:**
+
+| Service    | Container Name | Port  | Description        |
+| ---------- | -------------- | ----- | ------------------ |
+| Flask API  | `flaskapp`   | 8000  | RESTful backend    |
+| Angular UI | `frontend`   | 4200  | Web user interface |
+| MongoDB    | `mongodb`    | 27017 | Document database  |
+
+Docker Compose handles:
+
+* Multi-service orchestration
+* Network isolation
+* Shared volumes and environment management
+
+---
+
+### 🔁 System Workflow
+
+```plaintext
+User → Angular Frontend
+          ↓
+     Flask REST API
+          ↓
+  ┌────────────┐     ┌──────────────┐
+  │ Sentiment  │ ←→  │ MongoDB      │
+  │ Inference  │     └──────────────┘
+  │ & Reports  │
+  └────────────┘
+          ↓
+   Celery (for retraining)
+          ↓
+ Hugging Face Fine-tuning
+```
+
+---
+
+## 📌 Summary
+
+This architecture enables real-time sentiment analysis and theme extraction from tweets, while supporting continuous improvement of NLP models through on-demand retraining. It is fully portable and production-ready due to its containerized, service-oriented design.
+
+---
+
+Let me know if you’d like a  **visual architecture diagram** , or if you want this turned into a PDF or slide for presentation/documentation purposes.
+
 1. **Crée un dossier nommeExercice_journée_observation**
 
 ```bash
@@ -173,8 +324,7 @@ https://huggingface.co/neuroapps/sentiments_classifier=transformers
 ![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/25.png)
 ![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/26.png)
 ![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/27.png)
-![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/28.png)
-![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/29.png)
+![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/28.png)![Image 22](/home/bilel/Desktop/elk_stack/Question3/Exercice_journée_observation/real_images/29.png)
 
 **Remarque :**
 
